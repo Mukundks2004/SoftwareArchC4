@@ -1,0 +1,45 @@
+@startuml "techtribesjs"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+
+LAYOUT_TOP_DOWN()
+'LAYOUT_AS_SKETCH()
+'LAYOUT_WITH_LEGEND()
+
+
+Person_Ext(anonymous_user, "User (Anonymous)")
+Person(authorized_user, "User (Authorized with SSO)")
+
+System_Boundary(c1, "Dashboard Application"){
+    Container(web_app, "Single-Page Application", "Container: TypeScript and Vue", "Provides all of the dashboard control functionality to users via their web browser.")
+    
+    Container(query_controller, "Tenable Query Controller", "Component: ASP.NET Rest Controller", "Allows users to pull latest vulnerability data from tenable")
+    
+    Container(validation_controller, "Naabu Validation Controller", "Component: ASP.NET Rest Controller", "Allows users to scan data to get latest port status")
+}
+
+ContainerDb(rel_db, "Relational Database", "Container: SqlServer 15.0 Relational Database", "Stores port and asset data")
+
+System_Ext(power_bi, "Power BI")
+System_Ext(tenable, "Tenable")
+System_Ext(naabu, "Naabu.exe")
+
+
+Rel(anonymous_user, web_app, "Uses", "HTTPS")
+Rel(authorized_user, web_app, "Uses", "HTTPS")
+
+Rel(web_app, query_controller, "Makes API calls to", "JSON")
+Rel(web_app, query_controller, "Makes API calls to", "JSON")
+Rel(web_app, validation_controller, "Makes API calls to", "JSON")
+Rel(web_app, validation_controller, "Makes API calls to", "JSON")
+
+Rel_D(query_controller, rel_db, "Reads from and writes to", "SQL, port 3306")
+Rel_D(validation_controller, rel_db, "Reads from and writes to", "SQL, port 3306")
+Rel_D(validation_controller, naabu, "Runs scan via shell", "Shell")
+Rel_D(query_controller, tenable, "Makes API calls to", "JSON")
+
+Rel_L(web_app, power_bi, "Displays widget from", "HTML embed")
+
+
+@enduml
