@@ -5,4 +5,4 @@ Get C4 add on for plantuml, also on vs code
 Press Alt D to generate diagram
 
 Examples:
-![Example Diagram](/samplearch.png)
+![Example Diagram](/sample%20arch.png)
